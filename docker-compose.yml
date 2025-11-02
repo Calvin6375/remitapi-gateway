@@ -1,0 +1,36 @@
+﻿version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: remitapi-mongodb
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: remitapi
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand(\"ping\").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  remitapi:
+    build: .
+    container_name: remitapi-server
+    ports:
+      - '3000:3000'
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/remitapi
+      NODE_ENV: development
+      JWT_SECRET: dev-secret-key-change-in-production
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+    command: npm run dev
+
+volumes:
+  mongodb-data:
