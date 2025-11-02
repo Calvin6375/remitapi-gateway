@@ -103,5 +103,4 @@ npm test
 
 RemitAPI demonstrates how fintech apps can integrate with multiple payment providers securely using Node.js, encryption, and modern API design patterns.
 
-## 🧠 Author
 
